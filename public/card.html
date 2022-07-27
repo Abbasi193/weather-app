@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Page Title</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div id="main">
+        <div>
+            <p class="font30">Weather Update</p>
+            <input type="text" placeholder="Search cities... " id="input"><br>
+            <input type='button' id="button" value="Search">
+        </div>
+        <div id='card'>
+            <div class="container">
+                <span class='font30'><span id='city'></span>,<span id='country'></span></span>
+                <p id="text"></p>
+                <p><span id='time'></span>, <span id='date'></span></p>
+            </div>
+            <div class="container">
+                <div class=left>
+                    <span class='font70'><span id="temp"></span><sup><sup>o</sup>c</sup></span>
+                </div>
+                <div class=left>
+                    <img id='img'>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    function getData(city) {
+        var url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=d9b9f4f3497d78a8f4730214a1d16268&units=metric`
+        $.getJSON(url, function (data, status) {
+            setData(data)
+        })
+    }
+
+    function setData(data) {
+        $('#button').css('opacity', '1');
+        var date = new Date((data.dt + data.timezone + new Date().getTimezoneOffset() * 60) * 1000);
+        $('#country').html(data.sys.country)
+        $('#city').html(data.name)
+        $('#text').html(data.weather[0].main)
+        $('#temp').html(data.main.temp.toFixed(0))
+        $('#date').html(date.toDateString())
+        $('#time').html(date.getHours() + ":00")
+        $('#img').attr('src', `http://openweathermap.org/img/wn/${data.weather[0].icon}@4x.png`)
+        $('#card').css('display', 'block')
+    }
+
+    $('#button').click(function () {
+        this.style.opacity = 0.5
+        getData($('#input').val())
+    })
+</script>
+
+</html>

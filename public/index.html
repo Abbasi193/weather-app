@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Page Title</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            width: auto
+        }
+
+        #card {
+            margin: 20px;
+            height: 400px;
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <div id="main">
+        <div>
+            <p class="font30">Weather Forecast</p>
+            <input type="text" placeholder="Search cities... " id="input"><br>
+            <input type='button' id="button" value="Search">
+        </div>
+        <div id='card'>
+            <span class='font30'><span id='city'></span>,<span id='country'></span></span>
+            <br><br>
+            <div id='table'></div>
+        </div>
+    </div>
+
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    
+    function getData(city) {
+        var url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=d9b9f4f3497d78a8f4730214a1d16268&units=metric`
+        $.getJSON(url, function (data, status,err) {
+            setData(data)
+        })
+    }
+
+    function setData(data) {
+        $('#button').css('opacity', '1');
+        $('#table').html(prepareTable(data))
+        $('#country').html(data.city.country)
+        $('#city').html(data.city.name)
+        $('#card').css('display', 'block')
+    }
+
+    $('#button').click(function () {
+        this.style.opacity = 0.5
+        getData($('#input').val())
+    })
+
+    function prepareTable(data) {
+
+        var values = '<table>';
+        values += '<tr><th></th><th>0000-0200</th><th>0300-0500</th><th>0600-0800</th><th>0900-1100</th><th>1200-1400</th><th>1500-1700</th><th>1800-2000</th><th>2100-2300</th></tr>'
+        var i = 0
+        for (let k = 0; k < 5; k++) {
+            var date = new Date((data.list[i].dt + data.city.timezone + new Date().getTimezoneOffset() * 60) * 1000);
+            values += `<tr><td>${date.toDateString()}</td>`
+            for (let j = 0; j < 8; j++, i++) {
+                values +=
+                    `<td>
+                        ${data.list[i].main.temp.toFixed(0)}
+                        <sup><sup>o</sup>c</sup>
+                        ${data.list[i].weather[0].main}
+                        <img width='40px' src='http://openweathermap.org/img/wn/${data.list[i].weather[0].icon}@2x.png'>
+                    </td>`
+            }
+            values += `</tr>`
+        }
+        values += `</table>`
+        return values
+    }
+
+</script>
+
+</html>
