@@ -37,7 +37,7 @@
 <script>
     
     function getData(city) {
-        var url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=d9b9f4f3497d78a8f4730214a1d16268&units=metric`
+        var url = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid={'api-key'}&units=metric`
         $.getJSON(url, function (data, status,err) {
             setData(data)
         })
